@@ -6,6 +6,9 @@
 // Include the main libnx system header, for Switch development
 #include <switch.h>
 
+// Include the main cpython header
+#include <Python.h>
+
 // Main program entrypoint
 int main(int argc, char* argv[])
 {
@@ -16,8 +19,21 @@ int main(int argc, char* argv[])
     //   take a look at the graphics/opengl set of examples, which uses EGL instead.
     consoleInit(NULL);
 
-    // Other initialization goes here. As a demonstration, we print hello world.
-    printf("Hello World!\n");
+    Py_NoSiteFlag = 1;
+    Py_IgnoreEnvironmentFlag = 1;
+    Py_NoUserSiteDirectory = 1;
+
+    /* Look for python libraries in /lib/python3.X/ */
+    Py_SetPythonHome(L"/");
+
+    Py_Initialize();
+
+    printf("Python %s on %s\n", Py_GetVersion(), Py_GetPlatform());
+
+    /* Execute some python code!!! */
+    PyRun_SimpleString("print('Hello python world! Press + to exit.')");
+
+    Py_Finalize();
 
     // Main loop
     while (appletMainLoop())
